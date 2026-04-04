@@ -1,85 +1,184 @@
 'use client';
 
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import PaywallModal from '@/components/PaywallModal';
 
-interface PaywallModalProps {
-	isOpen: boolean;
-	onClose: () => void;
-}
+export default function ScopeCreepTool() {
+	const [formData, setFormData] = useState({
+		clientName: '',
+		extraRequest: '',
+		extraPrice: '',
+		timelineImpact: '',
+	});
 
-export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
+	const [result, setResult] = useState('');
+	const [isLoading, setIsLoading] = useState(false);
+	const [showPaywall, setShowPaywall] = useState(false);
+	const [copied, setCopied] = useState(false);
+
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		setIsLoading(true);
+		setResult('');
+		setCopied(false);
+
+		try {
+			const res = await fetch('/api/tools/generate', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					toolUsed: 'scope_creep', // THIS IS THE ONLY MAGIC KEY YOU CHANGE FOR EACH TOOL
+					inputData: formData,
+				}),
+			});
+
+			if (res.status === 403) {
+				setShowPaywall(true);
+				setIsLoading(false);
+				return;
+			}
+
+			const data = await res.json();
+			if (data.success) setResult(data.result);
+			else alert('Oops! Something went wrong.');
+		} catch (error) {
+			console.error(error);
+		}
+		setIsLoading(false);
+	};
+
+	const handleCopy = () => {
+		navigator.clipboard.writeText(result);
+		setCopied(true);
+		setTimeout(() => setCopied(false), 2000);
+	};
+
 	return (
-		<AnimatePresence>
-			{isOpen && (
-				<>
-					{/* The Blurred Backdrop */}
-					<motion.div
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						exit={{ opacity: 0 }}
-						onClick={onClose}
-						className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm"
+		<div className="max-w-3xl mx-auto pb-12">
+			<div className="mb-8">
+				<div className="inline-block px-3 py-1 bg-blue-500/20 text-blue-600 font-bold text-xs rounded-full uppercase tracking-wider mb-3">
+					Protect Your Margins
+				</div>
+				<h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-2">
+					The Scope Creep Generator
+				</h1>
+				<p className="text-slate-500 text-lg">
+					Turn the &quot;while you&rsquo;re here&quot; requests into formal
+					Change Orders without sounding like a jerk.
+				</p>
+			</div>
+
+			<form
+				onSubmit={handleSubmit}
+				className="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6"
+			>
+				<div>
+					<label className="block text-sm font-bold text-slate-700 mb-2">
+						Client Name
+					</label>
+					<input
+						type="text"
+						required
+						value={formData.clientName}
+						onChange={e =>
+							setFormData({ ...formData, clientName: e.target.value })
+						}
+						className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-slate-50"
+						placeholder="e.g., Mark Davis"
 					/>
+				</div>
 
-					{/* The Modal Card */}
-					<div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-						<motion.div
-							initial={{ opacity: 0, scale: 0.95, y: 20 }}
-							animate={{ opacity: 1, scale: 1, y: 0 }}
-							exit={{ opacity: 0, scale: 0.95, y: 20 }}
-							transition={{ type: 'spring', duration: 0.5, bounce: 0.3 }}
-							className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden pointer-events-auto border border-slate-100"
-						>
-							{/* Premium Header/Banner */}
-							<div className="bg-gradient-to-r from-amber-500 to-orange-500 p-6 text-center">
-								<div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-md">
-									<svg
-										className="w-8 h-8 text-white"
-										fill="none"
-										stroke="currentColor"
-										viewBox="0 0 24 24"
-									>
-										<path
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											strokeWidth={2}
-											d="M13 10V3L4 14h7v7l9-11h-7z"
-										/>
-									</svg>
-								</div>
-								<h2 className="text-2xl font-bold text-white">
-									Unlock Unlimited Power
-								</h2>
-							</div>
+				<div>
+					<label className="block text-sm font-bold text-slate-700 mb-2">
+						What did they ask for?
+					</label>
+					<textarea
+						required
+						rows={3}
+						value={formData.extraRequest}
+						onChange={e =>
+							setFormData({ ...formData, extraRequest: e.target.value })
+						}
+						className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-slate-50 resize-none"
+						placeholder="e.g., Since you have the paint out, can you just hit that side door too?"
+					/>
+				</div>
 
-							{/* Body Content */}
-							<div className="p-6 text-center space-y-4">
-								<p className="text-slate-600 font-medium text-lg">
-									You&amp;ve used your 3 free scripts!
-								</p>
-								<p className="text-slate-500 text-sm">
-									Upgrade to Pro to get unlimited generations, save your entire
-									client history in the Vault, and never write another awkward
-									email from scratch.
-								</p>
-
-								{/* The Conversion Button (Will link to Stripe) */}
-								<button className="w-full mt-4 bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 duration-200">
-									Upgrade to Pro — $29/mo
-								</button>
-
-								{/* Subtle Close Option */}
-								<button
-									onClick={onClose}
-									className="mt-4 text-sm text-slate-400 hover:text-slate-600 transition-colors"
-								>
-									Maybe later
-								</button>
-							</div>
-						</motion.div>
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+					<div>
+						<label className="block text-sm font-bold text-slate-700 mb-2">
+							Cost for the extra work
+						</label>
+						<div className="relative">
+							<span className="absolute left-4 top-3.5 text-slate-400 font-bold">
+								$
+							</span>
+							<input
+								type="text"
+								required
+								value={formData.extraPrice}
+								onChange={e =>
+									setFormData({ ...formData, extraPrice: e.target.value })
+								}
+								className="w-full pl-8 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-slate-50"
+								placeholder="250"
+							/>
+						</div>
 					</div>
-				</>
-			)}
-		</AnimatePresence>
+					<div>
+						<label className="block text-sm font-bold text-slate-700 mb-2">
+							Impact on Timeline
+						</label>
+						<input
+							type="text"
+							required
+							value={formData.timelineImpact}
+							onChange={e =>
+								setFormData({ ...formData, timelineImpact: e.target.value })
+							}
+							className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-slate-50"
+							placeholder="e.g., Adds half a day"
+						/>
+					</div>
+				</div>
+
+				<button
+					type="submit"
+					disabled={isLoading}
+					className="w-full bg-slate-900 text-white font-bold text-lg py-4 rounded-xl hover:bg-slate-800 transition-colors shadow-lg disabled:opacity-70 flex justify-center items-center gap-2"
+				>
+					{isLoading ? 'Drafting Response...' : 'Generate Change Order Text'}
+				</button>
+			</form>
+
+			<AnimatePresence>
+				{result && (
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						className="mt-8 bg-white border-2 border-blue-500 rounded-2xl shadow-xl overflow-hidden"
+					>
+						<div className="bg-blue-500 text-white px-6 py-4 flex justify-between items-center">
+							<h3 className="font-bold text-lg">✨ Your Script</h3>
+							<button
+								onClick={handleCopy}
+								className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm font-bold"
+							>
+								{copied ? 'Copied!' : 'Copy to Clipboard'}
+							</button>
+						</div>
+						<div className="p-6 md:p-8 whitespace-pre-wrap text-slate-700 font-medium">
+							{result}
+						</div>
+					</motion.div>
+				)}
+			</AnimatePresence>
+
+			<PaywallModal
+				isOpen={showPaywall}
+				onClose={() => setShowPaywall(false)}
+			/>
+		</div>
 	);
 }

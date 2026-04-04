@@ -46,7 +46,7 @@ export async function POST(req: Request) {
 			);
 		}
 
-		// 3. The Prompt Switcher (Selects the right system prompt based on the tool)
+		// 3. The Prompt Switcher
 		let systemInstruction = '';
 		let userMessage = '';
 
@@ -57,28 +57,85 @@ export async function POST(req: Request) {
         1. OPTION 1 (Economy): Basic compliance.
         2. OPTION 2 (Standard): The target value.
         3. OPTION 3 (Premium): The anchor.
-        
         Write a proposal acknowledging pain points, presenting 3 options, and explaining the logic. 
-        Do not use specific dollar amounts for Tier 1 or 3, use placeholders. Use the provided standard price for Tier 2.
+        Use the provided standard price for Tier 2. Do not invent exact dollar amounts for Tiers 1 and 3, use reasonable percentages based on Tier 2.
       `;
 			userMessage = `
-        [Client Name]: ${inputData.clientName}
-        [Project Type]: ${inputData.projectType}
-        [Client Goals]: ${inputData.clientGoals}
-        [My Rough Notes]: ${inputData.roughNotes}
-        [My Standard Price Estimate]: ${inputData.standardPrice}
+        Client: ${inputData.clientName}
+        Project: ${inputData.projectType}
+        Goals: ${inputData.clientGoals}
+        Notes: ${inputData.roughNotes}
+        Target Price: $${inputData.standardPrice}
       `;
 		} else if (toolUsed === 'scope_creep') {
 			systemInstruction = `
-        You are a Senior Project Manager. A client has casually asked for extra work.
-        You must use the "Pausing Technique." Validate the request, clearly define it as a "Change Order", 
-        and state that work on that specific area is paused until approved. Zero apologies.
+        You are a strict but highly professional Project Manager. The client has casually asked for extra work outside the original contract.
+        Use the "Pausing Technique." 
+        1. Validate their request politely. 
+        2. Clearly define it as a "Change Order." 
+        3. State that work on that specific area is paused until they approve the new cost and timeline. 
+        Zero apologies. Keep it under 4 sentences.
       `;
 			userMessage = `
-        [Client Name]: ${inputData.clientName}
-        [The Extra Request]: ${inputData.extraRequest}
-        [My Price for Extra Work]: ${inputData.extraPrice}
-        [Impact on Timeline]: ${inputData.timelineImpact}
+        Client: ${inputData.clientName}
+        The Extra Request: ${inputData.extraRequest}
+        Extra Price: $${inputData.extraPrice}
+        Timeline Impact: ${inputData.timelineImpact}
+      `;
+		} else if (toolUsed === 'polite_pay_up') {
+			systemInstruction = `
+        You are an Accounts Receivable Manager. Write a short, firm, but polite follow-up message to collect an overdue payment. 
+        Use the "Assumed Positive Intent" framework—assume they simply forgot or the invoice got lost, but clearly state the amount owed and that it needs to be paid today. Provide clear next steps.
+      `;
+			userMessage = `
+        Client: ${inputData.clientName}
+        Amount Owed: $${inputData.amountOwed}
+        Days Overdue: ${inputData.daysOverdue}
+        Project: ${inputData.projectName}
+      `;
+		} else if (toolUsed === 'bad_news') {
+			systemInstruction = `
+        You are a master communicator in construction management. You need to deliver bad news (delays, price hikes, material issues) to a client.
+        Use the "Buffer-Reason-Bad News-Solution" framework. 
+        Never just present a problem—always immediately follow the bad news with the exact solution you are implementing to fix it. Maintain authority and calm.
+      `;
+			userMessage = `
+        Client: ${inputData.clientName}
+        The Bad News: ${inputData.theBadNews}
+        The Reason: ${inputData.theReason}
+        Our Solution: ${inputData.theSolution}
+      `;
+		} else if (toolUsed === 'tire_kicker') {
+			systemInstruction = `
+        You are a high-end sales qualifier. You received a vague or overly demanding lead.
+        Write a polite response that sets clear boundaries, outlines your minimum project engagement (if provided), and asks 3 highly specific qualifying questions they must answer before you will schedule an onsite visit. 
+        The tone should be: "We are in high demand, let's see if we are a fit."
+      `;
+			userMessage = `
+        Lead Name: ${inputData.clientName}
+        Their Message: ${inputData.originalMessage}
+        My Minimum Job Size: ${inputData.minimumBudget}
+      `;
+		} else if (toolUsed === 'day_one') {
+			systemInstruction = `
+        You are a meticulous Project Manager sending a "Day One Onboarding" email to a client whose project starts tomorrow.
+        Set expectations clearly to avoid future conflict. Outline arrival times, parking needs, bathroom policies, and communication protocols. Be friendly but authoritative.
+      `;
+			userMessage = `
+        Client: ${inputData.clientName}
+        Project: ${inputData.projectType}
+        Start Time: ${inputData.startTime}
+        Specific Logistics/Rules: ${inputData.logistics}
+      `;
+		} else if (toolUsed === 'five_star') {
+			systemInstruction = `
+        You are a relationship-driven business owner. The project was just completed successfully. 
+        Write a warm text message/email asking for a Google Review. Use the "Favor Framework"—make it personal, mention a specific detail about the project that you enjoyed, and include a clear call to action with a placeholder for the review link.
+      `;
+			userMessage = `
+        Client: ${inputData.clientName}
+        Project Completed: ${inputData.projectType}
+        Favorite Detail About Job: ${inputData.favoriteDetail}
       `;
 		} else {
 			return NextResponse.json(

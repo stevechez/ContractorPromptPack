@@ -85,6 +85,7 @@ export default function LandingPage() {
 			</section>
 
 			{/* 3. THE SOLUTION / TOOLKIT */}
+			{/* 3. THE SOLUTION / TOOLKIT */}
 			<section className="py-24 px-4 bg-slate-900 text-white">
 				<div className="max-w-5xl mx-auto">
 					<div className="text-center mb-16">
@@ -97,8 +98,8 @@ export default function LandingPage() {
 						</p>
 					</div>
 
-					<div className="space-y-16">
-						{/* Feature 1 */}
+					<div className="space-y-24">
+						{/* Tool 1: Estimator */}
 						<div className="flex flex-col md:flex-row items-center gap-12">
 							<div className="flex-1 space-y-4">
 								<div className="inline-block px-3 py-1 bg-amber-500/20 text-amber-400 font-bold text-sm rounded-full">
@@ -116,7 +117,7 @@ export default function LandingPage() {
 							</div>
 							<div className="flex-1 w-full bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-2xl">
 								<div className="space-y-3 opacity-80 text-sm font-mono text-slate-300">
-									<p className="text-amber-400">
+									<p className="text-amber-400 font-bold">
 										Option 2: The Professional Choice
 									</p>
 									<p>• Full oil-based prime to guarantee no bleed-through</p>
@@ -126,7 +127,7 @@ export default function LandingPage() {
 							</div>
 						</div>
 
-						{/* Feature 2 */}
+						{/* Tool 2: Scope Creep */}
 						<div className="flex flex-col md:flex-row-reverse items-center gap-12">
 							<div className="flex-1 space-y-4">
 								<div className="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 font-bold text-sm rounded-full">
@@ -144,9 +145,134 @@ export default function LandingPage() {
 							<div className="flex-1 w-full bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-2xl">
 								<div className="space-y-3 opacity-80 text-sm font-mono text-slate-300">
 									<p>
-										&quot;Happy to help with that! Since that falls outside our
-										original scope, I&apos;ve created a Change Order for $150.
-										Reply YES to approve and we&apos;ll knock it out.&quot;
+										&ldquo;Happy to help with that! Since that falls outside our
+										original scope, I&rsquo;ve created a Change Order for $250.
+										Reply YES to approve and we&rsquo;ll knock it out.&rdquo;
+									</p>
+								</div>
+							</div>
+						</div>
+
+						{/* Tool 3: Polite Pay-Up */}
+						<div className="flex flex-col md:flex-row items-center gap-12">
+							<div className="flex-1 space-y-4">
+								<div className="inline-block px-3 py-1 bg-green-500/20 text-green-400 font-bold text-sm rounded-full">
+									TOOL 3
+								</div>
+								<h3 className="text-3xl font-bold">The Polite Pay-Up</h3>
+								<p className="text-slate-300 text-lg">
+									Chase down overdue invoices without ruining the client
+									relationship. We use the &quot;Assumed Positive Intent&quot;
+									framework to give them an out while firmly requesting payment.
+								</p>
+							</div>
+							<div className="flex-1 w-full bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-2xl">
+								<div className="space-y-3 opacity-80 text-sm font-mono text-slate-300">
+									<p>
+										&quot;Hi Tom, just following up on the final invoice for
+										$4,500. I know things get busy and these can slip through
+										the cracks. You can pay securely online here: [Link].
+										Thanks!&quot;
+									</p>
+								</div>
+							</div>
+						</div>
+
+						{/* Tool 4: Bad News Buffer */}
+						<div className="flex flex-col md:flex-row-reverse items-center gap-12">
+							<div className="flex-1 space-y-4">
+								<div className="inline-block px-3 py-1 bg-rose-500/20 text-rose-400 font-bold text-sm rounded-full">
+									TOOL 4
+								</div>
+								<h3 className="text-3xl font-bold">The Bad News Buffer</h3>
+								<p className="text-slate-300 text-lg">
+									Deliver delays, price hikes, or material issues while
+									maintaining total authority. We automatically pair your bad
+									news with a proactive solution to keep clients calm.
+								</p>
+							</div>
+							<div className="flex-1 w-full bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-2xl">
+								<div className="space-y-3 opacity-80 text-sm font-mono text-slate-300">
+									<p>
+										&ldquo;Quick update: Our supplier had a machinery breakdown,
+										pushing the custom cabinets back by 2 weeks. To ensure we
+										don&rsquo;t lose time, my crew is shifting focus to complete
+										all flooring and paint this week.&rdquo;
+									</p>
+								</div>
+							</div>
+						</div>
+
+						{/* Tool 5: Lead Qualifier */}
+						<div className="flex flex-col md:flex-row items-center gap-12">
+							<div className="flex-1 space-y-4">
+								<div className="inline-block px-3 py-1 bg-indigo-500/20 text-indigo-400 font-bold text-sm rounded-full">
+									TOOL 5
+								</div>
+								<h3 className="text-3xl font-bold">The Lead Qualifier</h3>
+								<p className="text-slate-300 text-lg">
+									Politely filter out bad leads and set strong boundaries before
+									you even get in the truck. Establish your minimums and demand
+									respect from day one.
+								</p>
+							</div>
+							<div className="flex-1 w-full bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-2xl">
+								<div className="space-y-3 opacity-80 text-sm font-mono text-slate-300">
+									<p>
+										&quot;Thanks for reaching out! We are currently booking into
+										next month. Before scheduling a site visit, please note our
+										minimum project size is $5,000. If that aligns with your
+										budget, let&rsquo;s chat.&quot;
+									</p>
+								</div>
+							</div>
+						</div>
+
+						{/* Tool 6: Day One Onboarding */}
+						<div className="flex flex-col md:flex-row-reverse items-center gap-12">
+							<div className="flex-1 space-y-4">
+								<div className="inline-block px-3 py-1 bg-teal-500/20 text-teal-400 font-bold text-sm rounded-full">
+									TOOL 6
+								</div>
+								<h3 className="text-3xl font-bold">Project Onboarding</h3>
+								<p className="text-slate-300 text-lg">
+									Send this the day before you start to establish rules and look
+									incredibly organized. Prevent parking disputes, bathroom
+									confusion, and pet escapes before they happen.
+								</p>
+							</div>
+							<div className="flex-1 w-full bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-2xl">
+								<div className="space-y-3 opacity-80 text-sm font-mono text-slate-300">
+									<p>
+										&quot;We&rsquo;re excited to start the demo tomorrow! The
+										crew will arrive between 8:00 - 8:30 AM. Please ensure the
+										driveway is clear for the dumpster and keep dogs inside. See
+										you tomorrow!&quot;
+									</p>
+								</div>
+							</div>
+						</div>
+
+						{/* Tool 7: Review Harvester */}
+						<div className="flex flex-col md:flex-row items-center gap-12">
+							<div className="flex-1 space-y-4">
+								<div className="inline-block px-3 py-1 bg-yellow-500/20 text-yellow-400 font-bold text-sm rounded-full">
+									TOOL 7
+								</div>
+								<h3 className="text-3xl font-bold">The Review Harvester</h3>
+								<p className="text-slate-300 text-lg">
+									Lock in a 5-star Google Review immediately after taking the
+									final payment. We use the &ldquo;Favor Framework&rdquo; to
+									make it highly personal so they actually click your link.
+								</p>
+							</div>
+							<div className="flex-1 w-full bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-2xl">
+								<div className="space-y-3 opacity-80 text-sm font-mono text-slate-300">
+									<p>
+										&ldquo;It was a pleasure working on your exterior! I
+										especially loved how the new trim color makes the brick pop.
+										If you have 60 seconds, a Google review means the world to
+										our small business: [Link]&rdquo;
 									</p>
 								</div>
 							</div>
