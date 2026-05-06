@@ -7,6 +7,7 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
+	console.log('COOKIE HEADER:', req.headers.get('cookie'));
 	console.log('🔥 /api/generate HIT');
 	// ✅ sanitize key properly
 	const rawKey = process.env.OPENAI_API_KEY;
@@ -35,6 +36,10 @@ export async function POST(req: Request) {
 			data: { user },
 			error: authError,
 		} = await supabase.auth.getUser();
+
+		console.log('AUTH ERROR:', authError);
+		console.log('USER:', user);
+		console.log('COOKIE HEADER:', req.headers.get('cookie'));
 
 		if (authError || !user) {
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
