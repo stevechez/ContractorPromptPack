@@ -15,7 +15,7 @@ const supabaseAdmin = createAdminClient(
 export async function POST(req: Request) {
 	// 2. Add a dummy fallback string so the SDK doesn't crash the build
 	const openai = new OpenAI({
-		apiKey: process.env.OPENAI_API_KEY || 'dummy_key_for_build',
+		apiKey: process.env.OPENAI_API_KEY,
 	});
 
 	try {
