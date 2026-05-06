@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js'; // Or your custom server client utility
 
 // Initialize Supabase Admin client for secure server-side operations
-const supabaseAdmin = createClient(
+const supabaseAdmin = await createClient(
 	process.env.NEXT_PUBLIC_SUPABASE_URL!,
 	process.env.SUPABASE_SERVICE_ROLE_KEY!,
 );
