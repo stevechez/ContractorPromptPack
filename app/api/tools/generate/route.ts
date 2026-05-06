@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
+import OpenAI from 'openai';
 import { createClient as createServerClient } from '@/utils/supabase/server';
 import { createClient as createAdminClient } from '@supabase/supabase-js';
-import OpenAI from 'openai';
 
 // 1. Force Next.js to treat this as a dynamic, server-side-only route
 export const dynamic = 'force-dynamic';
@@ -13,13 +13,21 @@ const supabaseAdmin = createAdminClient(
 );
 
 export async function POST(req: Request) {
+	const rawKey = process.env.OPENAI_API_KEY;
+
+	// SAFE LOGGING: This tells us if Vercel sees the key, and if it's the right one
+	console.log('🔥 VERCEL ENV CHECK:');
+	console.log('Key Exists?', !!rawKey);
+	console.log(
+		'Key Starts With:',
+		rawKey ? `${rawKey.substring(0, 7)}...` : 'UNDEFINED',
+	);
 	// 2. Add a dummy fallback string so the SDK doesn't crash the build
 	const openai = new OpenAI({
-		apiKey: process.env.OPENAI_API_KEY,
+		apiKey: rawKey,
 	});
 
 	try {
-		// 1. Authenticate the user via cookies
 		const supabase = await createServerClient();
 		const {
 			data: { user },
