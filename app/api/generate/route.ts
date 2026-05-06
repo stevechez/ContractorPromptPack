@@ -1,31 +1,42 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js'; // Or your custom server client utility
+import { createClient } from '@/utils/supabase/server';
+import { createClient as createAdminClient } from '@supabase/supabase-js';
 
-// Initialize Supabase Admin client for secure server-side operations
-const supabaseAdmin = await createClient(
-	process.env.NEXT_PUBLIC_SUPABASE_URL!,
-	process.env.SUPABASE_SERVICE_ROLE_KEY!,
-);
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
+	console.log('🔥 API ROUTE HIT');
+
+	// 1. Initialize the Admin Client (INSIDE the function, no await needed)
+	const supabaseAdmin = createAdminClient(
+		process.env.NEXT_PUBLIC_SUPABASE_URL!,
+		process.env.SUPABASE_SERVICE_ROLE_KEY!,
+	);
+
+	// 2. Log Cookies (Your Sniffer)
+	const cookieHeader = req.headers.get('cookie');
+	console.log('COOKIE HEADER EXISTS:', !!cookieHeader);
+
+	// 3. Initialize the Supabase Server Client
+	const supabase = await createClient();
+
+	// 4. Authenticate the User via Cookies
+	const {
+		data: { user },
+		error: authError,
+	} = await supabase.auth.getUser();
+
+	console.log('SUPABASE USER ID:', user?.id || 'NULL');
+
+	if (authError || !user) {
+		console.error('🚨 401: User is null or auth errored.');
+		return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+	}
+
 	try {
-		// 1. Get the user's Auth token from the request headers
-		const authHeader = req.headers.get('Authorization');
-		if (!authHeader)
-			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-		const token = authHeader.replace('Bearer ', '');
-		const {
-			data: { user },
-			error: userError,
-		} = await supabaseAdmin.auth.getUser(token);
-
-		if (userError || !user)
-			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
 		const { toolUsed, inputData } = await req.json();
 
-		// 2. Check Paywall Status
+		// 5. Check Paywall & Credits
 		const { data: profile } = await supabaseAdmin
 			.from('profiles')
 			.select('free_credits, subscription_status')
@@ -33,7 +44,7 @@ export async function POST(req: Request) {
 			.single();
 
 		const isSubscribed = profile?.subscription_status === 'active';
-		const hasCredits = profile?.free_credits > 0;
+		const hasCredits = (profile?.free_credits ?? 0) > 0;
 
 		if (!isSubscribed && !hasCredits) {
 			return NextResponse.json(
@@ -42,19 +53,63 @@ export async function POST(req: Request) {
 			);
 		}
 
-		// 3. GENERATE THE AI SCRIPT (Your hidden system prompt goes here)
-		// const generatedScript = await callYourAIModel(toolUsed, inputData);
-		const generatedScript = 'Here is your professional, generated text...'; // Placeholder
+		// 6. The Prompt Switcher (Using a simple fallback for safety)
+		let systemInstruction = 'You are a professional construction manager.';
+		let userMessage = JSON.stringify(inputData);
 
-		// 4. Deduct a credit (ONLY if they aren't subscribed)
-		if (!isSubscribed) {
+		if (toolUsed === 'estimator') {
+			systemInstruction = `You are a Senior Estimator. Use the "Goldilocks Effect" to write a Good/Better/Best proposal.`;
+			userMessage = `Client: ${inputData.clientName}, Project: ${inputData.projectType}, Goals: ${inputData.clientGoals}, Notes: ${inputData.roughNotes}, Target Price: $${inputData.standardPrice}`;
+		}
+		// ... (You can add the rest of your tool prompts back here) ...
+
+		const fullPrompt = `${systemInstruction}\n\nUSER REQUEST:\n${userMessage}`;
+
+		// 7. Call OpenAI using the native fetch (Bypassing SDK)
+		const rawKey = process.env.OPENAI_API_KEY?.trim();
+
+		if (!rawKey) {
+			console.error('🚨 Missing OPENAI_API_KEY');
+			return NextResponse.json(
+				{ success: false, error: 'Server config error' },
+				{ status: 500 },
+			);
+		}
+
+		const openAiResponse = await fetch('https://api.openai.com/v1/responses', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${rawKey}`,
+			},
+			body: JSON.stringify({
+				model: 'gpt-4o', // or whichever model you verified
+				input: fullPrompt,
+				store: true,
+			}),
+		});
+
+		if (!openAiResponse.ok) {
+			const errorText = await openAiResponse.text();
+			console.error('🚨 OpenAI API Error:', errorText);
+			return NextResponse.json(
+				{ success: false, error: 'Failed to generate script' },
+				{ status: openAiResponse.status },
+			);
+		}
+
+		const openAiData = await openAiResponse.json();
+		const generatedScript = openAiData.output?.[0]?.content?.[0]?.text || '';
+
+		// 8. Deduct a credit (ONLY if they aren't subscribed)
+		if (!isSubscribed && profile) {
 			await supabaseAdmin
 				.from('profiles')
-				.update({ free_credits: profile!.free_credits - 1 })
+				.update({ free_credits: profile.free_credits - 1 })
 				.eq('id', user.id);
 		}
 
-		// 5. Save to the Vault
+		// 9. Save to the Vault
 		await supabaseAdmin.from('generations').insert({
 			user_id: user.id,
 			tool_used: toolUsed,
@@ -62,9 +117,10 @@ export async function POST(req: Request) {
 			output_text: generatedScript,
 		});
 
-		// 6. Return the result to the UI
+		// 10. Return the successful result
 		return NextResponse.json({ success: true, result: generatedScript });
 	} catch (error) {
+		console.error('🔥 FATAL CATCH ERROR:', error);
 		return NextResponse.json(
 			{ success: false, error: 'Server error' },
 			{ status: 500 },

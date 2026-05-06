@@ -1,25 +1,29 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
-export const createClient = async () => {
-	const cookieStore = await cookies();
+export async function createClient() {
+	const cookieStore = await cookies(); // <-- CRITICAL: Must be awaited in newer Next.js
 
 	return createServerClient(
 		process.env.NEXT_PUBLIC_SUPABASE_URL!,
 		process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
 		{
 			cookies: {
-				getAll: () => cookieStore.getAll(),
-				setAll: cookiesToSet => {
+				getAll() {
+					return cookieStore.getAll();
+				},
+				setAll(cookiesToSet) {
 					try {
 						cookiesToSet.forEach(({ name, value, options }) => {
 							cookieStore.set(name, value, options);
 						});
-					} catch {
-						// ignore (server components restriction)
+					} catch (error) {
+						// This catch block is required. Next.js throws an error if you
+						// try to set cookies from a Server Component. We ignore it here
+						// because the Middleware handles the actual setting/refreshing.
 					}
 				},
 			},
 		},
 	);
-};
+}
