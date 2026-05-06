@@ -14,18 +14,9 @@ export async function POST(req: Request) {
 		process.env.SUPABASE_SERVICE_ROLE_KEY!,
 	);
 
-	const rawKey = process.env.OPENAI_API_KEY;
-
-	// SAFE LOGGING: This tells us if Vercel sees the key, and if it's the right one
-	console.log('🔥 VERCEL ENV CHECK:');
-	console.log('Key Exists?', !!rawKey);
-	console.log(
-		'Key Starts With:',
-		rawKey ? `${rawKey.substring(0, 7)}...` : 'UNDEFINED',
-	);
 	// 2. Add a dummy fallback string so the SDK doesn't crash the build
 	const openai = new OpenAI({
-		apiKey: rawKey,
+		apiKey: process.env.OPENAI_API_KEY,
 	});
 
 	try {
