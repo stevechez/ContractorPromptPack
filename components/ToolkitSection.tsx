@@ -2,153 +2,120 @@
 
 export default function ToolkitSection() {
 	return (
-		<section className="py-24 px-4 bg-slate-900 text-white border-t border-slate-800">
+		<section className="py-28 px-4 bg-slate-900 text-white border-t border-slate-800">
 			<div className="max-w-5xl mx-auto">
-				<div className="text-center mb-16">
-					<h2 className="text-3xl md:text-5xl font-bold mb-4">
-						The 3-Tier Bidding Engine
+				{/* SECTION HEADER */}
+				<div className="text-center mb-14">
+					<div className="inline-flex items-center gap-2 px-4 py-1.5 bg-amber-500/10 text-amber-400 text-xs font-bold uppercase tracking-widest rounded-full border border-amber-500/20 mb-6">
+						AI Sales Engine
+					</div>
+
+					<h2 className="text-3xl md:text-5xl font-bold mb-4 tracking-tight">
+						Win more bids without lowering your price
 					</h2>
-					<p className="text-slate-400 text-lg max-w-2xl mx-auto">
-						We took the psychology of high-end sales and turned it into a simple
-						tool you can use from the truck.
+
+					<p className="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
+						Turn rough notes into a high-converting 3-tier proposal in under 30
+						seconds. No writing. No formatting. No overthinking.
 					</p>
 				</div>
 
-				{/* THE MAIN EVENT: The Estimator - Make this the absolute focus */}
-				<div className="flex flex-col md:flex-row items-center gap-12 mb-24 bg-slate-800/50 p-8 md:p-12 rounded-3xl border border-slate-700">
-					<div className="flex-1 space-y-6">
-						<div className="inline-block px-4 py-1.5 bg-amber-500/20 text-amber-400 font-bold text-xs uppercase tracking-widest rounded-full border border-amber-500/30">
-							Available Now
+				{/* MAIN TOOL BLOCK */}
+				<div className="grid md:grid-cols-2 gap-10 items-stretch bg-slate-800/40 p-8 md:p-12 rounded-3xl border border-slate-700 shadow-2xl">
+					{/* LEFT: VALUE PROP */}
+					<div className="space-y-6 flex flex-col justify-center">
+						<div className="inline-block px-4 py-1.5 bg-emerald-500/10 text-emerald-400 font-bold text-xs uppercase tracking-widest rounded-full border border-emerald-500/20 w-fit">
+							Live Tool
 						</div>
-						<h3 className="text-3xl md:text-4xl font-bold leading-tight">
-							The &quot;Bid-to-Win&quot; Estimator
+
+						<h3 className="text-2xl md:text-4xl font-bold leading-tight">
+							The Bid-to-Win Estimator
 						</h3>
+
 						<p className="text-slate-300 text-lg leading-relaxed">
-							Stop guessing what the client can afford. Type in your rough notes
-							and your target price. The AI instantly generates a professional
-							Good, Better, Best proposal. The &quot;Premium&quot; option
-							anchors the price, making your target look like a steal.
+							Enter your rough job notes + target price. The AI builds a Good /
+							Better / Best proposal that psychologically anchors the client
+							above your number.
 						</p>
-						<div className="pt-4">
-							{/* UPDATED BUTTON: Added the onClick smooth scroll logic */}
-							<button
-								onClick={() => {
-									document.getElementById('estimator-tool')?.scrollIntoView({
-										behavior: 'smooth',
-										block: 'start',
-									});
-									// Optional focus
-									setTimeout(() => {
-										document.getElementById('client-name-input')?.focus();
-									}, 500);
-								}}
-								className="px-8 py-4 bg-white text-slate-900 font-bold rounded-xl hover:bg-slate-200 transition-colors shadow-lg text-lg flex items-center gap-2"
+
+						<ul className="space-y-2 text-sm text-slate-400">
+							<li>✓ Instantly generates 3-tier pricing structure</li>
+							<li>✓ Positions your price as the “reasonable option”</li>
+							<li>✓ Adds premium upsell automatically (no extra effort)</li>
+						</ul>
+
+						<button
+							onClick={() => {
+								document.getElementById('estimator-tool')?.scrollIntoView({
+									behavior: 'smooth',
+									block: 'start',
+								});
+
+								setTimeout(() => {
+									document.getElementById('client-name-input')?.focus();
+								}, 400);
+							}}
+							className="mt-2 px-8 py-4 bg-amber-500 text-slate-900 font-bold rounded-xl hover:bg-amber-400 transition-all shadow-lg hover:shadow-amber-500/20 text-lg flex items-center justify-center gap-2"
+						>
+							Generate a Proposal
+							<svg
+								className="w-5 h-5"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
 							>
-								Try the Estimator Free
-								<svg
-									className="w-5 h-5"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth={2.5}
-										d="M19 9l-7 7-7-7"
-									/>
-								</svg>
-							</button>
-						</div>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth={2.5}
+									d="M13 10V3L4 14h7v7l9-11h-7z"
+								/>
+							</svg>
+						</button>
+
+						<p className="text-xs text-slate-500">
+							No signup required • Takes ~30 seconds
+						</p>
 					</div>
 
-					{/* Visual Representation of the output */}
-					<div className="flex-1 w-full bg-[#0B1120] p-6 rounded-2xl border border-slate-700 shadow-2xl relative overflow-hidden">
-						<div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-amber-300"></div>
-						<div className="space-y-4 opacity-90 text-sm font-mono text-slate-300">
-							<p className="text-slate-500 mb-4">
-								{/* // Generated Output Preview */}
+					{/* RIGHT: OUTPUT PREVIEW */}
+					<div className="bg-[#0B1120] rounded-2xl border border-slate-700 shadow-xl overflow-hidden relative">
+						<div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-amber-300" />
+
+						<div className="p-6 space-y-4 font-mono text-sm text-slate-300">
+							<p className="text-slate-500 text-xs uppercase tracking-widest">
+								Generated Output Preview
 							</p>
-							<div className="pl-4 border-l-2 border-slate-700">
-								<p className="text-amber-400 font-bold text-base mb-1">
-									Option 2: The Professional Build
+
+							<div className="border-l-2 border-amber-500 pl-4 space-y-1">
+								<p className="text-amber-400 font-bold">
+									Option 2 — Professional Build
 								</p>
-								<p className="mb-1">• Full demo and haul away included.</p>
-								<p className="mb-1">
-									• 12x14 footprint with new concrete footings.
+								<p>• Full demo and haul away included</p>
+								<p>• New concrete footings + structural framing</p>
+								<p>• Premium Trex decking with hidden fasteners</p>
+
+								<p className="pt-2 text-white font-bold">Target: $12,500</p>
+							</div>
+
+							<div className="border-l-2 border-slate-700 pl-4 opacity-70">
+								<p className="text-slate-400 font-bold">
+									Option 3 — Premium Upgrade
 								</p>
-								<p className="mb-1">
-									• Standard Trex decking with hidden fasteners.
-								</p>
-								<p className="text-white font-bold mt-2">
-									Target Investment: $12,500
-								</p>
+								<p>• High-end composite finish</p>
+								<p>• Extended warranty + design upgrades</p>
+								<p className="text-amber-300 font-bold pt-1">$15,900</p>
 							</div>
 						</div>
 					</div>
 				</div>
 
-				{/* THE UPSELL TEASER: Compress the rest into a grid to show the value of upgrading to Buildrail later */}
-				<div className="border-t border-slate-800 pt-20">
-					<div className="text-center mb-12">
-						<h3 className="text-2xl font-bold mb-2">
-							Want the full Communication Vault?
-						</h3>
-						<p className="text-slate-400">
-							Unlock these 6 additional tools when you upgrade to Buildrail.
-						</p>
-					</div>
-
-					<div className="grid grid-cols-2 md:grid-cols-3 gap-6 opacity-70 hover:opacity-100 transition-opacity duration-500">
-						{/* Scope Creep */}
-						<div className="bg-slate-800 p-5 rounded-xl border border-slate-700">
-							<h4 className="text-blue-400 font-bold mb-2">
-								Scope Creep Generator
-							</h4>
-							<p className="text-sm text-slate-400">
-								Turn awkward text requests into formal Change Orders instantly.
-							</p>
-						</div>
-						{/* Polite Pay-Up */}
-						<div className="bg-slate-800 p-5 rounded-xl border border-slate-700">
-							<h4 className="text-green-400 font-bold mb-2">
-								The Polite Pay-Up
-							</h4>
-							<p className="text-sm text-slate-400">
-								Chase down overdue invoices without ruining the relationship.
-							</p>
-						</div>
-						{/* Bad News */}
-						<div className="bg-slate-800 p-5 rounded-xl border border-slate-700">
-							<h4 className="text-rose-400 font-bold mb-2">Bad News Buffer</h4>
-							<p className="text-sm text-slate-400">
-								Deliver delays or price hikes while maintaining total authority.
-							</p>
-						</div>
-						{/* Lead Qualifier */}
-						<div className="bg-slate-800 p-5 rounded-xl border border-slate-700">
-							<h4 className="text-indigo-400 font-bold mb-2">Lead Qualifier</h4>
-							<p className="text-sm text-slate-400">
-								Politely filter out bad leads and set strong boundaries early.
-							</p>
-						</div>
-						{/* Onboarding */}
-						<div className="bg-slate-800 p-5 rounded-xl border border-slate-700">
-							<h4 className="text-teal-400 font-bold mb-2">Day One Rules</h4>
-							<p className="text-sm text-slate-400">
-								Establish parking, bathroom, and pet rules before you arrive.
-							</p>
-						</div>
-						{/* Reviews */}
-						<div className="bg-slate-800 p-5 rounded-xl border border-slate-700">
-							<h4 className="text-yellow-400 font-bold mb-2">
-								Review Harvester
-							</h4>
-							<p className="text-sm text-slate-400">
-								Lock in a 5-star Google Review immediately after taking payment.
-							</p>
-						</div>
-					</div>
+				{/* SOFT UPSIDE (NOT A SECOND DESTINATION) */}
+				<div className="mt-16 text-center">
+					<p className="text-slate-500 text-sm max-w-xl mx-auto">
+						More tools are included in the full system — but the estimator alone
+						is designed to increase your win rate immediately.
+					</p>
 				</div>
 			</div>
 		</section>
