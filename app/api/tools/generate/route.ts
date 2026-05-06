@@ -6,11 +6,6 @@ import OpenAI from 'openai';
 // 1. Force Next.js to treat this as a dynamic, server-side-only route
 export const dynamic = 'force-dynamic';
 
-// 2. Add a dummy fallback string so the SDK doesn't crash the build
-const openai = new OpenAI({
-	apiKey: process.env.OPENAI_API_KEY || 'dummy_key_for_build',
-});
-
 // Initialize Supabase Admin for secure background operations (like deducting credits)
 const supabaseAdmin = createAdminClient(
 	process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -18,6 +13,11 @@ const supabaseAdmin = createAdminClient(
 );
 
 export async function POST(req: Request) {
+	// 2. Add a dummy fallback string so the SDK doesn't crash the build
+	const openai = new OpenAI({
+		apiKey: process.env.OPENAI_API_KEY || 'dummy_key_for_build',
+	});
+
 	try {
 		// 1. Authenticate the user via cookies
 		const supabase = await createServerClient();
