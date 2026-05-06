@@ -3,9 +3,12 @@ import { createClient as createServerClient } from '@/utils/supabase/server';
 import { createClient as createAdminClient } from '@supabase/supabase-js';
 import OpenAI from 'openai';
 
-// Initialize AI Provider
+// 1. Force Next.js to treat this as a dynamic, server-side-only route
+export const dynamic = 'force-dynamic';
+
+// 2. Add a dummy fallback string so the SDK doesn't crash the build
 const openai = new OpenAI({
-	apiKey: process.env.OPENAI_API_KEY,
+	apiKey: process.env.OPENAI_API_KEY || 'dummy_key_for_build',
 });
 
 // Initialize Supabase Admin for secure background operations (like deducting credits)
