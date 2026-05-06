@@ -19,7 +19,8 @@ export default function EstimatorTool() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [showPaywall, setShowPaywall] = useState(false);
 	const [copied, setCopied] = useState(false);
-
+	const toolUsed = 'estimator'; // or dynamic value
+	const inputData = formData; // whatever you're collecting
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setIsLoading(true);
@@ -29,10 +30,13 @@ export default function EstimatorTool() {
 		try {
 			const res = await fetch('/api/tools/generate', {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include', // 🔥 critical for auth
 				body: JSON.stringify({
-					toolUsed: 'estimator',
-					inputData: formData,
+					toolUsed,
+					inputData,
 				}),
 			});
 
@@ -46,7 +50,6 @@ export default function EstimatorTool() {
 
 			if (data.success) {
 				setResult(data.result);
-				// Optional: Scroll down to the result so they don't miss it
 				setTimeout(() => {
 					document
 						.getElementById('result-card')
