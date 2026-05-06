@@ -26,6 +26,7 @@ export default function EstimatorTool() {
 		setIsLoading(true);
 		setResult('');
 		setCopied(false);
+		console.log('🔥 HIT tools/generate route');
 
 		try {
 			const res = await fetch('/api/tools/generate', {
