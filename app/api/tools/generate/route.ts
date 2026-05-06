@@ -99,7 +99,7 @@ export async function POST(req: Request) {
 				Authorization: `Bearer ${apiKey}`, // ✅ use sanitized key
 			},
 			body: JSON.stringify({
-				model: 'gpt-4o',
+				model: 'gpt-4.1-mini',
 				input: fullPrompt,
 			}),
 		});
@@ -122,8 +122,10 @@ export async function POST(req: Request) {
 
 		const openAiData = await openAiResponse.json();
 
-		const generatedScript = openAiData.output?.[0]?.content?.[0]?.text || '';
-
+		const generatedScript =
+			openAiData.output_text ||
+			openAiData.output?.[0]?.content?.[0]?.text ||
+			'';
 		if (!isSubscribed && profile) {
 			await supabaseAdmin
 				.from('profiles')
