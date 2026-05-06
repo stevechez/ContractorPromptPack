@@ -7,12 +7,13 @@ import { createClient as createAdminClient } from '@supabase/supabase-js';
 export const dynamic = 'force-dynamic';
 
 // Initialize Supabase Admin for secure background operations (like deducting credits)
-const supabaseAdmin = createAdminClient(
-	process.env.NEXT_PUBLIC_SUPABASE_URL!,
-	process.env.SUPABASE_SERVICE_ROLE_KEY!,
-);
 
 export async function POST(req: Request) {
+	const supabaseAdmin = createAdminClient(
+		process.env.NEXT_PUBLIC_SUPABASE_URL!,
+		process.env.SUPABASE_SERVICE_ROLE_KEY!,
+	);
+
 	const rawKey = process.env.OPENAI_API_KEY;
 
 	// SAFE LOGGING: This tells us if Vercel sees the key, and if it's the right one
