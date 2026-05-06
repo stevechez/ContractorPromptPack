@@ -1,23 +1,22 @@
 import { NextResponse } from 'next/server';
-import OpenAI from 'openai';
 import { createClient as createServerClient } from '@/utils/supabase/server';
 import { createClient as createAdminClient } from '@supabase/supabase-js';
 
 // 1. Force Next.js to treat this as a dynamic, server-side-only route
 export const dynamic = 'force-dynamic';
 
-// Initialize Supabase Admin for secure background operations (like deducting credits)
-
 export async function POST(req: Request) {
+	const rawKey = process.env.OPENAI_API_KEY;
+
+	if (!rawKey) {
+		return NextResponse.json({ error: 'Missing API Key' }, { status: 500 });
+	}
+
+	// Initialize Supabase Admin INSIDE the function
 	const supabaseAdmin = createAdminClient(
 		process.env.NEXT_PUBLIC_SUPABASE_URL!,
 		process.env.SUPABASE_SERVICE_ROLE_KEY!,
 	);
-
-	// 2. Add a dummy fallback string so the SDK doesn't crash the build
-	const openai = new OpenAI({
-		apiKey: process.env.OPENAI_API_KEY,
-	});
 
 	try {
 		const supabase = await createServerClient();
@@ -147,23 +146,42 @@ export async function POST(req: Request) {
 			);
 		}
 
-		// 4. Call the AI
-		const completion = await openai.chat.completions.create({
-			model: 'gpt-4o', // or your preferred model
-			temperature: 0.7,
-			messages: [
-				{ role: 'system', content: systemInstruction },
-				{ role: 'user', content: userMessage },
-			],
+		// 4. Call the AI using native fetch to bypass SDK issues
+		// Formatting the prompt to work with the Responses API 'input' string requirement
+		const fullPrompt = `${systemInstruction}\n\nUSER REQUEST:\n${userMessage}`;
+
+		const openAiResponse = await fetch('https://api.openai.com/v1/responses', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${rawKey}`,
+			},
+			body: JSON.stringify({
+				model: 'gpt-4o', // Make sure this model is accessible by your tier
+				input: fullPrompt,
+				store: true,
+			}),
 		});
 
-		const generatedScript = completion.choices[0].message.content || '';
+		if (!openAiResponse.ok) {
+			const errorText = await openAiResponse.text();
+			console.error('OpenAI API Error:', errorText);
+			return NextResponse.json(
+				{ success: false, error: 'Failed to generate script' },
+				{ status: openAiResponse.status },
+			);
+		}
+
+		const openAiData = await openAiResponse.json();
+
+		// Safely extract the generated text from the new Responses API structure
+		const generatedScript = openAiData.output?.[0]?.content?.[0]?.text || '';
 
 		// 5. Deduct a credit (ONLY if they aren't subscribed)
-		if (!isSubscribed) {
+		if (!isSubscribed && profile) {
 			await supabaseAdmin
 				.from('profiles')
-				.update({ free_credits: profile!.free_credits - 1 })
+				.update({ free_credits: profile.free_credits - 1 })
 				.eq('id', user.id);
 		}
 
