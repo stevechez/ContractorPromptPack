@@ -105,7 +105,7 @@ export async function POST(req: Request) {
 		});
 
 		// ✅ MUCH better error visibility
-		if (!openAiResponse.ok) {
+		if (openAiResponse.ok) {
 			const errorJson = await openAiResponse.json().catch(() => null);
 			console.error('OpenAI STATUS:', openAiResponse.status);
 			console.error('OpenAI ERROR BODY:', errorJson);
