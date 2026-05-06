@@ -9,6 +9,7 @@ export const dynamic = 'force-dynamic';
 export async function POST(req: Request) {
 	console.log('COOKIE HEADER:', req.headers.get('cookie'));
 	console.log('🔥 /api/generate HIT');
+	console.log('🔥🔥🔥 /api/tools/generate ACTIVE ROUTE 🔥🔥🔥');
 	// ✅ sanitize key properly
 	const rawKey = process.env.OPENAI_API_KEY;
 	const apiKey = rawKey?.trim();
