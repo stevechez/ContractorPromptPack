@@ -7,6 +7,7 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
+	console.log('🔥 /api/generate HIT');
 	// ✅ sanitize key properly
 	const rawKey = process.env.OPENAI_API_KEY;
 	const apiKey = rawKey?.trim();
