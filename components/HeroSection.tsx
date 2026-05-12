@@ -56,18 +56,6 @@ export default function HeroSection() {
 					>
 						Generate My Higher-Price Bid
 					</button>
-
-					{/* Secondary CTA (important for conversion lift) */}
-					<button
-						onClick={() =>
-							document.getElementById('estimator-tool')?.scrollIntoView({
-								behavior: 'smooth',
-							})
-						}
-						className="w-full sm:w-auto px-8 py-5 bg-white/5 border border-white/10 text-white font-semibold rounded-xl hover:bg-white/10 transition"
-					>
-						See Example Output
-					</button>
 				</div>
 
 				<p className="text-slate-400 text-sm mt-5">

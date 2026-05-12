@@ -14,6 +14,11 @@ const tools = [
 	{ name: 'Lead Qualifier', href: '/tools/tire-kicker', icon: '🎯' },
 	{ name: 'Project Onboarding', href: '/tools/day-one', icon: '🤝' },
 	{ name: 'Review Harvester', href: '/tools/five-star', icon: '⭐' },
+	{
+		name: 'Price Objection Tool',
+		href: '/tools/price-objection-tool',
+		icon: '💸',
+	},
 ];
 
 export default function Sidebar() {

@@ -80,7 +80,7 @@ export default function EstimatorTool() {
 			className="py-24 px-4 bg-slate-50 relative border-t border-slate-200"
 		>
 			{/* Subtle background element for depth */}
-			<div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-[0.03] pointer-events-none"></div>
+			<div className="absolute inset-0 opacity-[0.03] pointer-events-none"></div>
 
 			<div className="max-w-3xl mx-auto relative z-10">
 				{/* Tool Header - Centered for better flow into the form */}

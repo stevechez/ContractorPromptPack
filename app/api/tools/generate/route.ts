@@ -46,6 +46,9 @@ export async function POST(req: Request) {
 		} else if (toolUsed === 'day_one') {
 			systemInstruction = `You are a meticulous Project Manager...`;
 			userMessage = `Client: ${inputData.clientName}, Start: ${inputData.startTime}`;
+		} else if (toolUsed === 'price_objection') {
+			systemInstruction = `You are a confident, high-end contractor who never competes on price...`;
+			userMessage = `Client: ${inputData.clientName} ...`;
 		} else if (toolUsed === 'five_star') {
 			systemInstruction = `You are a relationship-driven business owner...`;
 			userMessage = `Client: ${inputData.clientName}, Project: ${inputData.projectType}`;
